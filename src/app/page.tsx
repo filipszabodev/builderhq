@@ -1,20 +1,9 @@
 import Link from "next/link";
 import { CampMascot } from "@/components/CampMascot";
 import { GamePanel } from "@/components/GamePanel";
-import { createClient } from "@/lib/supabase/server";
 
-export default async function HomePage() {
-  let user: { id: string } | null = null;
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
-    user = authUser;
-  } catch (error) {
-    console.error("HomePage auth error", error);
-  }
-
+/** Homepage stays static so a Supabase misconfig cannot take down the whole site. */
+export default function HomePage() {
   return (
     <div className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_20%_20%,rgba(240,180,41,0.15),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(63,143,74,0.2),transparent_30%)]" />
@@ -40,10 +29,10 @@ export default async function HomePage() {
                 Browse bases
               </Link>
               <Link
-                href={user ? "/bases" : "/register"}
+                href="/register"
                 className="rounded-xl border-2 border-gold/40 bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:border-gold/70"
               >
-                {user ? "Enter the bases" : "Join the camp"}
+                Join the camp
               </Link>
             </div>
           </div>
@@ -51,11 +40,7 @@ export default async function HomePage() {
           <CampMascot
             character="barbarian"
             size="lg"
-            line={
-              user
-                ? "Welcome back, Chief! Ready to build or copy something spicy?"
-                : "Welcome to the camp! Come in, copy bases, and show us what you built."
-            }
+            line="Welcome to the camp! Come in, copy bases, and show us what you built."
           />
         </section>
 
