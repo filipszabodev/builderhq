@@ -2,10 +2,10 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 function readPublicSupabaseEnv() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env["NEXT_PUBLIC_SUPABASE_URL"];
   const key =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    process.env["NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"] ??
+    process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
 
   if (!url || !key) return null;
   return { url, key };
@@ -16,7 +16,6 @@ export async function updateSession(request: NextRequest) {
 
   const env = readPublicSupabaseEnv();
   if (!env) {
-    // Don't crash the whole site if env is missing on Edge.
     return supabaseResponse;
   }
 
@@ -41,7 +40,7 @@ export async function updateSession(request: NextRequest) {
     await supabase.auth.getUser();
   } catch (error) {
     console.error("supabase middleware error", error);
-    return NextResponse.next({ request });
+    return supabaseResponse;
   }
 
   return supabaseResponse;

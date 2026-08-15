@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
 function hasEnv(name: string) {
-  return Boolean(process.env[name]);
+  const key = name as keyof NodeJS.ProcessEnv;
+  return Boolean(process.env[key]);
 }
 
 /** Safe env presence check — never returns secret values. */

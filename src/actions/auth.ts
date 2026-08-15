@@ -86,6 +86,7 @@ export async function signInAction(
     .eq("id", user.id)
     .maybeSingle();
 
+  revalidatePath("/", "layout");
   redirect(profile?.username ? "/" : "/onboarding");
 }
 
