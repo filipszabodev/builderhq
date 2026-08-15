@@ -1,9 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import {
   getSupabasePublishableKey,
-  getSupabaseSecretKey,
   getSupabaseUrl,
 } from "@/lib/supabase/env";
 
@@ -31,18 +29,7 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Refresh session — important for Server Components.
   await supabase.auth.getUser();
 
   return supabaseResponse;
-}
-
-/** Privileged server client. Use only in trusted server code. Bypasses RLS. */
-export function createServiceClient() {
-  return createSupabaseClient(getSupabaseUrl(), getSupabaseSecretKey(), {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
 }

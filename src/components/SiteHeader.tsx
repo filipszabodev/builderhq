@@ -37,6 +37,14 @@ export async function SiteHeader() {
           >
             Bases
           </Link>
+          {user ? (
+            <Link
+              href="/upload"
+              className="rounded-xl px-3 py-2 text-sm font-medium text-muted transition hover:bg-surface hover:text-foreground"
+            >
+              Upload
+            </Link>
+          ) : null}
 
           {user ? (
             <>

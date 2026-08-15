@@ -424,11 +424,19 @@ Only after launch + real usage:
 
 ## 16. Current status
 
-**Current milestone:** Milestone 1 — Auth + profiles (visual camp layer added)  
-**Overall MVP progress:** Milestone 0 complete · Milestone 1 mostly done · Design direction locked  
+**Current milestone:** Milestone 3 — Copy Base + browse polish  
+**Overall MVP progress:** Milestone 0–2 done (auth + publish + listing + filters)  
 **Live URL:** https://builderhq-jet.vercel.app/  
 **Design source of truth:** `DESIGN.md`  
-**Next action:** Drop Fan Kit character PNGs into `public/characters/` · then push + Vercel env · Milestone 2 upload
+**Next action:** Record copy clicks, increment views, push latest code to Vercel + add Supabase env vars there
+
+### Milestone 2 checklist progress
+- [x] Bases validation + slug helpers + upload UI/API code
+- [x] Run bases + taxonomy SQL in Supabase
+- [x] Image storage working (Supabase Storage; R2 blocked locally by TLS)
+- [x] Test publish a base end-to-end
+- [ ] Push Milestone 2 to GitHub / Vercel
+- [ ] Add env vars on Vercel (Supabase keys)
 
 ### Milestone 0 checklist progress
 - [x] Create Next.js app (TS + Tailwind + App Router)
