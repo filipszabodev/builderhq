@@ -1,8 +1,8 @@
+import { env } from "node:process";
 import { NextResponse } from "next/server";
 
-function hasEnv(name: string) {
-  const key = name as keyof NodeJS.ProcessEnv;
-  return Boolean(process.env[key]);
+function hasEnv(name: keyof typeof env) {
+  return Boolean(env[name]);
 }
 
 /** Safe env presence check — never returns secret values. */
@@ -26,6 +26,6 @@ export async function GET() {
   return NextResponse.json({
     ok: flags.NEXT_PUBLIC_SUPABASE_URL && flags.hasPublicKey,
     flags,
-    siteUrl: process.env["NEXT_PUBLIC_SITE_URL"] ?? null,
+    siteUrl: env.NEXT_PUBLIC_SITE_URL ?? null,
   });
 }
