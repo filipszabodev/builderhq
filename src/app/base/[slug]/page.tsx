@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CampMascot } from "@/components/CampMascot";
+import { BaseVotePanel } from "@/components/bases/BaseVotePanel";
 import { CopyBaseButton } from "@/components/bases/CopyBaseButton";
 import { GamePanel } from "@/components/GamePanel";
 import { getPublicImageUrl, isStorageConfigured } from "@/lib/storage";
@@ -61,8 +62,11 @@ export default async function BasePage({ params }: Props) {
       thumbnail_image_key,
       like_count,
       dislike_count,
+      rating_count,
+      average_rating,
       copy_count,
       view_count,
+      creator_id,
       created_at,
       creator:profiles!bases_creator_id_fkey (
         username,
@@ -77,6 +81,26 @@ export default async function BasePage({ params }: Props) {
   if (!base) notFound();
 
   await supabase.rpc("increment_base_view_count", { p_base_id: base.id });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let myVote: 1 | -1 | null = null;
+  if (user) {
+    const { data: voteRow } = await supabase
+      .from("base_votes")
+      .select("vote")
+      .eq("base_id", base.id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (voteRow?.vote === 1 || voteRow?.vote === -1) {
+      myVote = voteRow.vote;
+    }
+  }
+
+  const isOwner = Boolean(user && user.id === base.creator_id);
+  const canVote = Boolean(user && !isOwner);
 
   const creator = Array.isArray(base.creator) ? base.creator[0] : base.creator;
   const imageUrl = isStorageConfigured()
@@ -98,7 +122,7 @@ export default async function BasePage({ params }: Props) {
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <CampMascot
         character="goblin"
-        line="Tap Copy Base to pull this layout straight into Clash."
+        line="Tap Copy Base to pull this layout straight into Clash — then tell the camp if it holds."
       />
 
       <div className="mt-6 overflow-hidden rounded-2xl border-2 border-gold/40 bg-surface shadow-[0_12px_0_rgba(0,0,0,0.3)]">
@@ -156,15 +180,24 @@ export default async function BasePage({ params }: Props) {
 
         <GamePanel>
           <CopyBaseButton baseId={base.id} copyLink={base.copy_link} />
+          <BaseVotePanel
+            baseId={base.id}
+            slug={base.slug}
+            canVote={canVote}
+            isOwner={isOwner}
+            isLoggedIn={Boolean(user)}
+            initial={{
+              likeCount: base.like_count,
+              dislikeCount: base.dislike_count,
+              ratingCount: base.rating_count,
+              averageRating: Number(base.average_rating),
+              myVote,
+            }}
+          />
           <div className="mt-4 grid grid-cols-2 gap-3 text-center text-sm">
-            <Stat label="Likes" value={base.like_count} />
-            <Stat label="Dislikes" value={base.dislike_count} />
             <Stat label="Copies" value={base.copy_count} />
             <Stat label="Views" value={base.view_count + 1} />
           </div>
-          <p className="mt-4 text-xs text-muted">
-            Ratings & comments arrive in the next community milestone.
-          </p>
         </GamePanel>
       </div>
     </div>

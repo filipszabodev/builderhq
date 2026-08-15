@@ -50,7 +50,8 @@ export default async function BuilderProfilePage({ params }: Props) {
       like_count,
       copy_count,
       view_count,
-      average_rating
+      average_rating,
+      rating_count
     `,
     )
     .eq("creator_id", profile.id)
@@ -61,6 +62,8 @@ export default async function BuilderProfilePage({ params }: Props) {
     bases?.reduce((sum, b) => sum + Number(b.copy_count || 0), 0) ?? 0;
   const totalViews =
     bases?.reduce((sum, b) => sum + Number(b.view_count || 0), 0) ?? 0;
+  const totalLikes =
+    bases?.reduce((sum, b) => sum + Number(b.like_count || 0), 0) ?? 0;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -77,8 +80,9 @@ export default async function BuilderProfilePage({ params }: Props) {
         <p className="mt-4 text-muted">No bio yet.</p>
       )}
 
-      <div className="mt-6 grid max-w-lg grid-cols-3 gap-3">
+      <div className="mt-6 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard label="Bases" value={bases?.length ?? 0} />
+        <StatCard label="Likes" value={totalLikes} />
         <StatCard label="Copies" value={totalCopies} />
         <StatCard label="Views" value={totalViews} />
       </div>
@@ -129,9 +133,11 @@ export default async function BuilderProfilePage({ params }: Props) {
                       {base.title}
                     </h3>
                     <p className="mt-2 text-sm text-muted">
-                      👁 {base.view_count} · ⭐{" "}
-                      {Number(base.average_rating).toFixed(1)} · 📋{" "}
-                      {base.copy_count}
+                      👁 {base.view_count} ·{" "}
+                      {base.rating_count > 0
+                        ? `${Number(base.average_rating).toFixed(0)}%`
+                        : "No score"}{" "}
+                      · 📋 {base.copy_count}
                     </p>
                   </GamePanel>
                 </Link>

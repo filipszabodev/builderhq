@@ -57,6 +57,7 @@ export default async function BasesPage({
       copy_count,
       view_count,
       average_rating,
+      rating_count,
       created_at,
       creator:profiles!bases_creator_id_fkey (username)
     `,
@@ -239,9 +240,11 @@ export default async function BasesPage({
                     </p>
                   ) : null}
                   <p className="mt-2 text-sm text-muted">
-                    @{creator?.username ?? "unknown"} · 👁 {base.view_count} · ⭐{" "}
-                    {Number(base.average_rating).toFixed(1)} · 📋{" "}
-                    {base.copy_count}
+                    @{creator?.username ?? "unknown"} · 👁 {base.view_count} ·{" "}
+                    {base.rating_count > 0
+                      ? `${Number(base.average_rating).toFixed(0)}%`
+                      : "No score"}{" "}
+                    · 📋 {base.copy_count}
                   </p>
                 </GamePanel>
               </Link>
