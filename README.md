@@ -8,6 +8,7 @@ Unofficial fan project. Not endorsed by Supercell.
 - `MVP.md` — current MVP execution plan (track progress here)
 - `PROJECT.md` — full product vision
 - `BRAND.md` — brand essentials
+- `DESIGN.md` — Clash community visual/UX direction (follow for all UI)
 
 ## Stack
 - Next.js + TypeScript + Tailwind

@@ -1,13 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #16110e;
-  --foreground: #f4ebe1;
-  --muted: #b5a496;
-  --ember: #e8913a;
-  --ember-soft: #c56f22;
-  --surface: #211914;
-  --border: #3a2e25;
+  /* Clash-inspired camp palette — gamey, not official-client clone */
+  --background: #0f1b14;
+  --foreground: #f6f0e4;
+  --muted: #b9c4a8;
+  --ember: #f0b429;
+  --ember-soft: #d4921a;
+  --gold: #ffd76a;
+  --grass: #3f8f4a;
+  --grass-deep: #1f5c32;
+  --wood: #5c3b24;
+  --wood-light: #7a5233;
+  --stone: #6d6558;
+  --surface: #1a2a1f;
+  --surface-2: #243528;
+  --border: #3d4f3a;
+  --sky-glow: rgba(110, 180, 255, 0.12);
+  --ember-glow: rgba(240, 180, 41, 0.22);
 }
 
 @theme inline {
@@ -16,7 +26,14 @@
   --color-muted: var(--muted);
   --color-ember: var(--ember);
   --color-ember-soft: var(--ember-soft);
+  --color-gold: var(--gold);
+  --color-grass: var(--grass);
+  --color-grass-deep: var(--grass-deep);
+  --color-wood: var(--wood);
+  --color-wood-light: var(--wood-light);
+  --color-stone: var(--stone);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-border: var(--border);
   --font-sans: var(--font-outfit);
   --font-display: var(--font-display);
@@ -24,10 +41,72 @@
 
 body {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232, 145, 58, 0.18), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(197, 111, 34, 0.12), transparent 50%),
-    var(--background);
+    radial-gradient(ellipse 90% 55% at 50% -15%, var(--sky-glow), transparent 55%),
+    radial-gradient(ellipse 50% 35% at 15% 85%, rgba(63, 143, 74, 0.18), transparent 50%),
+    radial-gradient(ellipse 45% 30% at 90% 70%, var(--ember-glow), transparent 45%),
+    linear-gradient(180deg, #102018 0%, var(--background) 45%, #0c1610 100%);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   min-height: 100vh;
+}
+
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ember-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(240, 180, 41, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(240, 180, 41, 0);
+  }
+}
+
+@keyframes camp-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.mascot-bob {
+  animation: mascot-bob 2.4s ease-in-out infinite;
+}
+
+.bubble-in {
+  animation: bubble-in 0.35s ease-out both;
+}
+
+.cta-ember {
+  animation: ember-pulse 2.2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-bob,
+  .bubble-in,
+  .cta-ember {
+    animation: none !important;
+  }
 }

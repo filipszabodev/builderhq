@@ -45,9 +45,18 @@ A Clash of Clans community hub for base layouts, attack strategies, Clan Capital
 
 ---
 
+## Experience direction (permanent)
+BuilderHQ must feel like a **Clash community camp**: characters (Barbarian, Archer, Builder…), game-style panels, light animations, and interactive guides — while staying fast and easy.
+
+Full rules: see **`DESIGN.md`** (source of truth for UI/UX for the whole project).
+
+---
+
 ## MVP focus
 Trusted base discovery and sharing first.
 Expand to strategies, Clan Capital, and updates after validation.
+
+Visual quality is part of MVP — not “text-only now, pretty later.”
 
 ---
 
@@ -55,3 +64,4 @@ Expand to strategies, Clan Capital, and updates after validation.
 Unofficial fan project.
 Not affiliated with or endorsed by Supercell.
 Include Supercell Fan Content Policy disclaimer in the footer.
+Prefer Supercell Fan Kit for character art: https://fankit.supercell.com/

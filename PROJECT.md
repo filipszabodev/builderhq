@@ -1800,9 +1800,13 @@ SEO landing pages such as /th17/war-bases
 
 The homepage should focus on discovery for the current product stage.
 
+It must follow `DESIGN.md`: camp/hero atmosphere, mascot presence, game-style panels — not a text-only landing page.
+
 MVP potential sections:
 
 ```text
+Mascot welcome + brand hero
+
 Search
 
 Trending Bases
@@ -2456,6 +2460,9 @@ When implementing this project:
 18. Do not implement features outside the current milestone unless requested.
 19. Keep the product public-first: no login wall for reading/copying.
 20. When a feature is not needed to validate the base MVP, defer it.
+21. Follow `DESIGN.md` for all UI: Clash community vibe, mascots, game panels, light motion, mobile-fast.
+22. Prefer CSS/SVG/optimized PNGs for characters; add Three.js only for a deliberate hero later if performance stays good.
+23. Prefer Supercell Fan Kit character art over random scraped assets.
 
 ---
 

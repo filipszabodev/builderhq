@@ -1,0 +1,16 @@
+---
+description: Keep BuilderHQ Clash community visual direction
+alwaysApply: true
+---
+
+# BuilderHQ design direction
+
+Follow `DESIGN.md` for all UI work.
+
+- Feel like a Clash of Clans **community camp**, not generic SaaS
+- Use mascots (Barbarian/Archer/Builder/Goblin) via `CampMascot` and `GamePanel`
+- Prefer Fan Kit PNGs in `public/characters/`; placeholders are OK until then
+- Interactive guides (character asks questions) over cold forms
+- Light CSS motion only; Three.js only for a deliberate future hero if mobile-fast
+- Keep actions obvious and fast on mobile
+- Never present the site as official Supercell

@@ -3,13 +3,14 @@
 > Solo free-time project.  
 > Goal: ship a polished **base-sharing community**, nothing else.  
 > Brand: **BuilderHQ** · Domain: **builder-hq.com**  
-> Full vision lives in `PROJECT.md`. This file is the only source of truth for MVP execution.
+> Full vision lives in `PROJECT.md`. Visual/UX direction lives in `DESIGN.md` (follow forever).  
+> This file is the only source of truth for MVP execution.
 
 ---
 
 ## 1. MVP definition (one sentence)
 
-A public website where anyone can browse and copy Clash of Clans bases, and logged-in users can post bases, like/dislike, comment, and build a simple creator profile.
+A public website where anyone can browse and copy Clash of Clans bases, and logged-in users can post bases, like/dislike, comment, and build a simple creator profile — with a **Clash community / game-style** look (characters, panels, light motion), documented in `DESIGN.md`.
 
 ---
 
@@ -271,6 +272,7 @@ Suggested cadence:
 - [ ] Git repo + GitHub remote
 - [ ] `.env.example` ready
 - [ ] Basic layout shell (nav, footer, disclaimer)
+- [ ] Clash community visual direction documented (`DESIGN.md`)
 - [ ] Deploy empty site to Vercel
 - [ ] Point domain DNS (can be later, but better early)
 
@@ -284,9 +286,10 @@ Suggested cadence:
 - [ ] Supabase project
 - [ ] Email auth working
 - [ ] `profiles` table + RLS
-- [ ] Onboarding username flow
+- [ ] Onboarding username flow (**mascot asks questions**, not a cold form wall)
 - [ ] Public profile page skeleton
 - [ ] Edit profile (bio/avatar optional if avatar hard)
+- [ ] Homepage/auth pages use Clash community visual language
 
 **Done when:** sign up → set username → open `/builder/username`.
 
@@ -421,16 +424,27 @@ Only after launch + real usage:
 
 ## 16. Current status
 
-**Current milestone:** Milestone 0 — Project foundation  
-**Overall MVP progress:** ~40% of Milestone 0  
-**Next action:** create GitHub repo + Vercel project; then Milestone 1 Supabase account
+**Current milestone:** Milestone 1 — Auth + profiles (visual camp layer added)  
+**Overall MVP progress:** Milestone 0 complete · Milestone 1 mostly done · Design direction locked  
+**Live URL:** https://builderhq-jet.vercel.app/  
+**Design source of truth:** `DESIGN.md`  
+**Next action:** Drop Fan Kit character PNGs into `public/characters/` · then push + Vercel env · Milestone 2 upload
 
 ### Milestone 0 checklist progress
 - [x] Create Next.js app (TS + Tailwind + App Router)
-- [ ] Git repo + GitHub remote
+- [x] Git repo + GitHub remote
 - [x] `.env.example` ready
 - [x] Basic layout shell (nav, footer, disclaimer)
-- [ ] Deploy empty site to Vercel
+- [x] Deploy empty site to Vercel
 - [ ] Point domain DNS (can be later)
+
+### Milestone 1 checklist progress
+- [x] Supabase project connected in `.env.local`
+- [x] Auth client/server helpers + middleware
+- [x] Login / register / onboarding UI
+- [ ] Run `profiles` SQL migration in Supabase
+- [ ] Configure Auth redirect URLs
+- [ ] Test signup → username → public profile locally
+- [ ] Add env vars on Vercel + redeploy
 
 Update this section every time you finish a milestone.
