@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CampMascot } from "@/components/CampMascot";
+import { CopyBaseButton } from "@/components/bases/CopyBaseButton";
 import { GamePanel } from "@/components/GamePanel";
 import { getPublicImageUrl, isStorageConfigured } from "@/lib/storage";
 import { createClient } from "@/lib/supabase/server";
@@ -72,6 +73,8 @@ export default async function BasePage({ params }: Props) {
     .maybeSingle();
 
   if (!base) notFound();
+
+  await supabase.rpc("increment_base_view_count", { p_base_id: base.id });
 
   const creator = Array.isArray(base.creator) ? base.creator[0] : base.creator;
   const imageUrl = isStorageConfigured()
@@ -150,19 +153,12 @@ export default async function BasePage({ params }: Props) {
         </div>
 
         <GamePanel>
-          <a
-            href={base.copy_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cta-ember flex w-full items-center justify-center rounded-xl bg-ember px-4 py-3 text-sm font-bold text-[#1a1208]"
-          >
-            Copy Base
-          </a>
+          <CopyBaseButton baseId={base.id} copyLink={base.copy_link} />
           <div className="mt-4 grid grid-cols-2 gap-3 text-center text-sm">
             <Stat label="Likes" value={base.like_count} />
             <Stat label="Dislikes" value={base.dislike_count} />
             <Stat label="Copies" value={base.copy_count} />
-            <Stat label="Views" value={base.view_count} />
+            <Stat label="Views" value={base.view_count + 1} />
           </div>
           <p className="mt-4 text-xs text-muted">
             Ratings & comments arrive in the next community milestone.

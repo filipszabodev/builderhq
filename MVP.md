@@ -424,19 +424,18 @@ Only after launch + real usage:
 
 ## 16. Current status
 
-**Current milestone:** Milestone 3 — Copy Base + browse polish  
-**Overall MVP progress:** Milestone 0–2 done (auth + publish + listing + filters)  
+**Current milestone:** Milestone 3 — Copy + views (in progress)  
+**Overall MVP progress:** Publish/browse done · counters next  
 **Live URL:** https://builderhq-jet.vercel.app/  
-**Design source of truth:** `DESIGN.md`  
-**Next action:** Record copy clicks, increment views, push latest code to Vercel + add Supabase env vars there
+**Next action:** Run counters SQL · test Copy/Views · add Vercel env vars
 
-### Milestone 2 checklist progress
-- [x] Bases validation + slug helpers + upload UI/API code
-- [x] Run bases + taxonomy SQL in Supabase
-- [x] Image storage working (Supabase Storage; R2 blocked locally by TLS)
-- [x] Test publish a base end-to-end
-- [ ] Push Milestone 2 to GitHub / Vercel
-- [ ] Add env vars on Vercel (Supabase keys)
+### Milestone 3 checklist progress
+- [x] Copy Base button records copy + opens official link (code)
+- [x] View increment on base page (code)
+- [x] Profile shows published bases + stats (code)
+- [ ] Run `202603150005_base_counters.sql` in Supabase
+- [ ] Test copy/view counters locally
+- [ ] Add Supabase env vars on Vercel + redeploy
 
 ### Milestone 0 checklist progress
 - [x] Create Next.js app (TS + Tailwind + App Router)
