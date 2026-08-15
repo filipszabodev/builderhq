@@ -3,19 +3,26 @@ import { signOutAction } from "@/actions/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export async function SiteHeader() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  let user: { id: string } | null = null;
   let username: string | null = null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", user.id)
-      .maybeSingle();
-    username = profile?.username ?? null;
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    user = authUser;
+
+    if (authUser) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", authUser.id)
+        .maybeSingle();
+      username = profile?.username ?? null;
+    }
+  } catch (error) {
+    console.error("SiteHeader auth error", error);
   }
 
   return (

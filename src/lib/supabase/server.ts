@@ -1,14 +1,26 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import {
-  getSupabasePublishableKey,
-  getSupabaseUrl,
-} from "@/lib/supabase/env";
+
+function readPublicEnv() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  return { url, key };
+}
 
 export async function createClient() {
+  const { url, key } = readPublicEnv();
+  if (!url || !key) {
+    throw new Error(
+      "Missing Supabase public env vars on server (URL + publishable/anon key).",
+    );
+  }
+
   const cookieStore = await cookies();
 
-  return createServerClient(getSupabaseUrl(), getSupabasePublishableKey(), {
+  return createServerClient(url, key, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

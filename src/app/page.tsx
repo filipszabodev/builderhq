@@ -4,10 +4,16 @@ import { GamePanel } from "@/components/GamePanel";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user: { id: string } | null = null;
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    user = authUser;
+  } catch (error) {
+    console.error("HomePage auth error", error);
+  }
 
   return (
     <div className="relative overflow-hidden">
@@ -79,13 +85,6 @@ export default async function HomePage() {
             </GamePanel>
           ))}
         </section>
-
-        <GamePanel className="text-center">
-          <p className="text-sm text-muted">
-            Next up: publish bases, ratings, and comments — still with this camp
-            energy.
-          </p>
-        </GamePanel>
       </div>
     </div>
   );
