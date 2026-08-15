@@ -10,15 +10,22 @@ function readPublicEnv() {
   return { url, key };
 }
 
+export function hasSupabasePublicEnv() {
+  const { url, key } = readPublicEnv();
+  return Boolean(url && key);
+}
+
 export async function createClient() {
+  // Touch cookies first so Next marks the route dynamic even if env is missing.
+  // Otherwise `next build` tries to prerender and crashes before cookies() runs.
+  const cookieStore = await cookies();
+
   const { url, key } = readPublicEnv();
   if (!url || !key) {
     throw new Error(
       "Missing Supabase public env vars on server (URL + publishable/anon key).",
     );
   }
-
-  const cookieStore = await cookies();
 
   return createServerClient(url, key, {
     cookies: {

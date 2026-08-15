@@ -9,6 +9,8 @@ import {
   type BaseType,
 } from "@/lib/validation/base";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ username: string }>;
 };
