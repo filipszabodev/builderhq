@@ -28,7 +28,7 @@ export async function SiteHeader() {
   }
 
   return (
-    <header className="border-b-2 border-gold/25 bg-[#102018]/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b-2 border-gold/25 bg-[#0e1a12]/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="group flex items-baseline gap-2">
           <span className="font-display text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
@@ -46,14 +46,6 @@ export async function SiteHeader() {
           >
             Bases
           </Link>
-          {user ? (
-            <Link
-              href="/upload"
-              className="rounded-xl px-3 py-2 text-sm font-medium text-muted transition hover:bg-surface hover:text-foreground"
-            >
-              Upload
-            </Link>
-          ) : null}
 
           {user ? (
             <>

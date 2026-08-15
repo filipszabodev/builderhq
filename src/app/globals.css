@@ -40,14 +40,32 @@
 }
 
 body {
-  background:
-    radial-gradient(ellipse 90% 55% at 50% -15%, var(--sky-glow), transparent 55%),
-    radial-gradient(ellipse 50% 35% at 15% 85%, rgba(63, 143, 74, 0.18), transparent 50%),
-    radial-gradient(ellipse 45% 30% at 90% 70%, var(--ember-glow), transparent 45%),
-    linear-gradient(180deg, #102018 0%, var(--background) 45%, #0c1610 100%);
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 100% 60% at 50% -20%, rgba(120, 190, 255, 0.16), transparent 55%),
+    radial-gradient(ellipse 55% 40% at 8% 90%, rgba(63, 143, 74, 0.22), transparent 55%),
+    radial-gradient(ellipse 50% 35% at 95% 75%, rgba(240, 180, 41, 0.14), transparent 50%),
+    radial-gradient(ellipse 40% 25% at 70% 20%, rgba(255, 215, 106, 0.06), transparent 60%),
+    linear-gradient(180deg, #12241a 0%, var(--background) 42%, #0a120e 100%);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   min-height: 100vh;
+}
+
+.camp-hero-glow {
+  background:
+    radial-gradient(ellipse 70% 55% at 20% 30%, rgba(240, 180, 41, 0.18), transparent 60%),
+    radial-gradient(ellipse 55% 50% at 85% 40%, rgba(63, 143, 74, 0.2), transparent 55%),
+    linear-gradient(180deg, rgba(18, 36, 26, 0.2) 0%, transparent 70%);
+}
+
+.camp-grid {
+  background-image:
+    linear-gradient(rgba(255, 215, 106, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 215, 106, 0.35) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 30%, black, transparent 75%);
 }
 
 @keyframes mascot-bob {

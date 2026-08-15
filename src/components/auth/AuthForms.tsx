@@ -48,7 +48,7 @@ export function SignUpForm() {
 
   return (
     <AuthShell
-      character="builder"
+      character="archer"
       mascotLine="New recruit? Create an account and pitch your tent in BuilderHQ."
       title="Join the camp"
       footer={
@@ -91,7 +91,7 @@ function AuthShell({
   footer: React.ReactNode;
   children: React.ReactNode;
   mascotLine: string;
-  character?: "barbarian" | "builder";
+  character?: "barbarian" | "builder" | "archer" | "goblin";
 }) {
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-12 sm:px-6 sm:py-16">

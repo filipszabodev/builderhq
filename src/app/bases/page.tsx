@@ -123,6 +123,13 @@ export default async function BasesPage({
         </Link>
       </div>
 
+      <div className="mt-6">
+        <CampMascot
+          character="archer"
+          line="Scout the walls, Chief. Filter by Town Hall, type, and tags — then copy what holds."
+        />
+      </div>
+
       <GamePanel className="mt-8 space-y-4">
         <FilterRow label="Town Hall">
           <Chip href={hrefFor({ th: undefined })} active={!th}>
@@ -187,8 +194,8 @@ export default async function BasesPage({
       {!bases?.length ? (
         <div className="mt-10">
           <CampMascot
-            character="builder"
-            line="No bases match these filters yet. Try another Town Hall — or upload the first one!"
+            character="archer"
+            line="No bases match these filters yet. Try another Town Hall — or come back after the next raid of uploads."
           />
         </div>
       ) : (
