@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | BuilderHQ",
   },
   description:
-    "Community hub for Clash of Clans base layouts. Browse, copy, rate, and share bases with creator profiles.",
+    "Portfolio demo: a Clash of Clans community camp for browsing, copying, and rating base layouts.",
 };
 
 export default function RootLayout({

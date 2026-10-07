@@ -12,7 +12,8 @@ export function SiteFooter() {
             community camp
           </p>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
-            Where Clash builders gather — bases, feedback, and campfire energy.
+            Portfolio demo — where Clash builders gather. Bases, feedback, and
+            campfire energy.
           </p>
           <div className="mt-5 flex flex-wrap gap-3 text-sm">
             <Link

@@ -1,14 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import {
-  completeOnboardingAction,
-  type AuthActionState,
-} from "@/actions/auth";
+import { useState } from "react";
 import { CampMascot } from "@/components/CampMascot";
+import { DemoNotice } from "@/components/DemoNotice";
 import { GamePanel } from "@/components/GamePanel";
-
-const initialState: AuthActionState = {};
 
 type Step = "username" | "displayName" | "bio";
 
@@ -25,19 +20,18 @@ export function OnboardingForm() {
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
-  const [state, formAction, pending] = useActionState(
-    completeOnboardingAction,
-    initialState,
-  );
+  const [done, setDone] = useState(false);
 
   const step = steps[stepIndex];
   const isLast = stepIndex === steps.length - 1;
 
   function nextStep() {
-    if (step === "username") {
-      if (username.trim().length < 3) return;
+    if (step === "username" && username.trim().length < 3) return;
+    if (!isLast) {
+      setStepIndex((i) => i + 1);
+      return;
     }
-    if (!isLast) setStepIndex((i) => i + 1);
+    setDone(true);
   }
 
   return (
@@ -49,104 +43,56 @@ export function OnboardingForm() {
           Step {stepIndex + 1} of {steps.length}
         </p>
 
-        {/* Hidden fields always submitted on final step */}
-        <form action={formAction} className="flex flex-col gap-4">
-          <input type="hidden" name="username" value={username} />
-          <input type="hidden" name="displayName" value={displayName} />
-          <input type="hidden" name="bio" value={bio} />
-
-          {step === "username" ? (
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-muted">Username</span>
-              <input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                minLength={3}
-                maxLength={30}
-                pattern="[A-Za-z0-9_]+"
-                placeholder="example_builder"
-                className="rounded-xl border-2 border-border bg-background px-3 py-3 outline-none ring-ember focus:ring-2"
-                autoFocus
-              />
-            </label>
-          ) : null}
-
-          {step === "displayName" ? (
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-muted">Display name (optional)</span>
-              <input
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                maxLength={50}
-                placeholder="Chief Filip"
-                className="rounded-xl border-2 border-border bg-background px-3 py-3 outline-none ring-ember focus:ring-2"
-                autoFocus
-              />
-            </label>
-          ) : null}
-
-          {step === "bio" ? (
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-muted">Bio (optional)</span>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                maxLength={300}
-                rows={3}
-                placeholder="TH17 war base builder…"
-                className="rounded-xl border-2 border-border bg-background px-3 py-3 outline-none ring-ember focus:ring-2"
-                autoFocus
-              />
-            </label>
-          ) : null}
-
-          {state.error ? (
-            <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-              {state.error}
-            </p>
-          ) : null}
-
-          <div className="flex flex-wrap gap-3">
-            {stepIndex > 0 ? (
-              <button
-                type="button"
-                onClick={() => setStepIndex((i) => i - 1)}
-                className="rounded-xl border-2 border-border px-4 py-2.5 text-sm font-semibold text-muted transition hover:bg-surface-2"
-              >
-                Back
-              </button>
+        {done ? (
+          <DemoNotice />
+        ) : (
+          <div className="flex flex-col gap-4">
+            {step === "username" ? (
+              <label className="flex flex-col gap-1.5 text-sm">
+                <span className="text-muted">Username</span>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="rounded-xl border-2 border-border bg-background px-3 py-3 outline-none ring-ember focus:ring-2"
+                  placeholder="WallBreaker"
+                />
+              </label>
             ) : null}
 
-            {!isLast ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="cta-ember rounded-xl bg-ember px-5 py-2.5 text-sm font-bold text-[#1a1208] transition hover:bg-ember-soft"
-              >
-                Next
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={pending || username.trim().length < 3}
-                className="cta-ember rounded-xl bg-ember px-5 py-2.5 text-sm font-bold text-[#1a1208] transition hover:bg-ember-soft disabled:opacity-60"
-              >
-                {pending ? "Entering the camp…" : "Enter BuilderHQ"}
-              </button>
-            )}
-
-            {step !== "username" && !isLast ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="text-sm text-muted underline-offset-2 hover:underline"
-              >
-                Skip
-              </button>
+            {step === "displayName" ? (
+              <label className="flex flex-col gap-1.5 text-sm">
+                <span className="text-muted">Display name</span>
+                <input
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  className="rounded-xl border-2 border-border bg-background px-3 py-3 outline-none ring-ember focus:ring-2"
+                  placeholder="Wall Breaker"
+                />
+              </label>
             ) : null}
+
+            {step === "bio" ? (
+              <label className="flex flex-col gap-1.5 text-sm">
+                <span className="text-muted">Bio</span>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  rows={3}
+                  className="rounded-xl border-2 border-border bg-background px-3 py-3 outline-none ring-ember focus:ring-2"
+                  placeholder="War bases & CWL specialist"
+                />
+              </label>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={nextStep}
+              className="cta-ember rounded-xl bg-ember px-4 py-3 text-sm font-bold text-[#1a1208]"
+            >
+              {isLast ? "Finish setup" : "Continue"}
+            </button>
           </div>
-        </form>
+        )}
       </GamePanel>
     </div>
   );

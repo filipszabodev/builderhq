@@ -5,139 +5,59 @@ import { CampMascot } from "@/components/CampMascot";
 import { BaseVotePanel } from "@/components/bases/BaseVotePanel";
 import { CopyBaseButton } from "@/components/bases/CopyBaseButton";
 import { GamePanel } from "@/components/GamePanel";
-import { getPublicImageUrl, isStorageConfigured } from "@/lib/storage";
-import { createClient } from "@/lib/supabase/server";
+import { BASES, getBaseBySlug } from "@/data/bases";
 import {
   baseTagLabels,
   baseTypeLabels,
   type BaseTag,
   type BaseType,
-} from "@/lib/validation/base";
-
-export const dynamic = "force-dynamic";
+} from "@/lib/taxonomy";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+export function generateStaticParams() {
+  return BASES.map((base) => ({ slug: base.slug }));
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("bases")
-    .select("title, description, town_hall_level, base_type")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle();
-
-  if (!data) return { title: "Base" };
-
+  const base = getBaseBySlug(slug);
+  if (!base) return { title: "Base" };
   return {
-    title: data.title,
-    description:
-      data.description ||
-      `TH${data.town_hall_level ?? "?"} ${data.base_type} base on BuilderHQ`,
+    title: base.title,
+    description: base.description,
   };
 }
 
 export default async function BasePage({ params }: Props) {
   const { slug } = await params;
-  const supabase = await createClient();
-
-  const { data: base } = await supabase
-    .from("bases")
-    .select(
-      `
-      id,
-      title,
-      slug,
-      description,
-      layout_type,
-      town_hall_level,
-      builder_hall_level,
-      base_type,
-      tags,
-      copy_link,
-      full_image_key,
-      thumbnail_image_key,
-      like_count,
-      dislike_count,
-      rating_count,
-      average_rating,
-      copy_count,
-      view_count,
-      creator_id,
-      created_at,
-      creator:profiles!bases_creator_id_fkey (
-        username,
-        display_name
-      )
-    `,
-    )
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle();
-
+  const base = getBaseBySlug(slug);
   if (!base) notFound();
 
-  await supabase.rpc("increment_base_view_count", { p_base_id: base.id });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let myVote: 1 | -1 | null = null;
-  if (user) {
-    const { data: voteRow } = await supabase
-      .from("base_votes")
-      .select("vote")
-      .eq("base_id", base.id)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (voteRow?.vote === 1 || voteRow?.vote === -1) {
-      myVote = voteRow.vote;
-    }
-  }
-
-  const isOwner = Boolean(user && user.id === base.creator_id);
-  const canVote = Boolean(user && !isOwner);
-
-  const creator = Array.isArray(base.creator) ? base.creator[0] : base.creator;
-  const imageUrl = isStorageConfigured()
-    ? getPublicImageUrl(base.full_image_key)
-    : null;
-
   const levelLabel =
-    base.layout_type === "builder_base"
-      ? `BH${base.builder_hall_level}`
-      : `TH${base.town_hall_level}`;
-
+    base.layoutType === "builder_base"
+      ? `BH${base.builderHallLevel}`
+      : `TH${base.townHallLevel}`;
   const typeLabel =
-    baseTypeLabels[base.base_type as BaseType] ?? base.base_type;
-  const tagLabels = ((base.tags as string[]) ?? []).map(
-    (t) => baseTagLabels[t as BaseTag] ?? t,
-  );
+    baseTypeLabels[base.baseType as BaseType] ?? base.baseType;
+  const tagLabels = base.tags.map((t) => baseTagLabels[t as BaseTag] ?? t);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <CampMascot
         character="goblin"
-        line="Tap Copy Base to pull this layout straight into Clash — then tell the camp if it holds."
+        line="Tap Copy Base to open the Clash layout link — then tell the camp if it holds."
       />
 
       <div className="mt-6 overflow-hidden rounded-2xl border-2 border-gold/40 bg-surface shadow-[0_12px_0_rgba(0,0,0,0.3)]">
-        {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={imageUrl}
-            alt={base.title}
-            className="max-h-[70vh] w-full object-contain bg-black/30"
-          />
-        ) : (
-          <div className="flex h-64 items-center justify-center bg-black/20 text-sm text-muted">
-            Image storage not configured yet
-          </div>
-        )}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={base.image}
+          alt={base.title}
+          className="max-h-[70vh] w-full object-contain bg-black/30"
+        />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
@@ -160,43 +80,34 @@ export default async function BasePage({ params }: Props) {
               ))}
             </div>
           ) : null}
-          {creator ? (
-            <p className="mt-2 text-muted">
-              by{" "}
-              <Link
-                href={`/builder/${creator.username}`}
-                className="font-semibold text-ember hover:underline"
-              >
-                @{creator.username}
-              </Link>
-            </p>
-          ) : null}
-          {base.description ? (
-            <p className="mt-4 max-w-2xl leading-relaxed text-foreground/90">
-              {base.description}
-            </p>
-          ) : null}
+          <p className="mt-2 text-muted">
+            by{" "}
+            <Link
+              href={`/builder/${base.creator.username}`}
+              className="font-semibold text-ember hover:underline"
+            >
+              @{base.creator.username}
+            </Link>
+          </p>
+          <p className="mt-4 max-w-2xl leading-relaxed text-foreground/90">
+            {base.description}
+          </p>
         </div>
 
         <GamePanel>
-          <CopyBaseButton baseId={base.id} copyLink={base.copy_link} />
+          <CopyBaseButton copyLink={base.copyLink} />
           <BaseVotePanel
-            baseId={base.id}
-            slug={base.slug}
-            canVote={canVote}
-            isOwner={isOwner}
-            isLoggedIn={Boolean(user)}
             initial={{
-              likeCount: base.like_count,
-              dislikeCount: base.dislike_count,
-              ratingCount: base.rating_count,
-              averageRating: Number(base.average_rating),
-              myVote,
+              likeCount: base.likeCount,
+              dislikeCount: base.dislikeCount,
+              ratingCount: base.ratingCount,
+              averageRating: base.ratingPercent,
+              myVote: null,
             }}
           />
           <div className="mt-4 grid grid-cols-2 gap-3 text-center text-sm">
-            <Stat label="Copies" value={base.copy_count} />
-            <Stat label="Views" value={base.view_count + 1} />
+            <Stat label="Copies" value={base.copyCount} />
+            <Stat label="Views" value={base.viewCount} />
           </div>
         </GamePanel>
       </div>

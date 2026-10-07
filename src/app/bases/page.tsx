@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { CampMascot } from "@/components/CampMascot";
 import { GamePanel } from "@/components/GamePanel";
-import { getPublicImageUrl, isStorageConfigured } from "@/lib/storage";
-import { createClient } from "@/lib/supabase/server";
+import { listBases } from "@/data/bases";
 import {
   baseTagLabels,
   baseTags,
@@ -10,9 +9,7 @@ import {
   baseTypes,
   type BaseTag,
   type BaseType,
-} from "@/lib/validation/base";
-
-export const dynamic = "force-dynamic";
+} from "@/lib/taxonomy";
 
 export const metadata = {
   title: "Bases",
@@ -40,53 +37,12 @@ export default async function BasesPage({
     : undefined;
   const sort = params.sort ?? "newest";
 
-  const supabase = await createClient();
-  let query = supabase
-    .from("bases")
-    .select(
-      `
-      title,
-      slug,
-      town_hall_level,
-      builder_hall_level,
-      layout_type,
-      base_type,
-      tags,
-      thumbnail_image_key,
-      like_count,
-      copy_count,
-      view_count,
-      average_rating,
-      rating_count,
-      created_at,
-      creator:profiles!bases_creator_id_fkey (username)
-    `,
-    )
-    .eq("status", "published");
-
-  if (th && th >= 3 && th <= 18) {
-    query = query.eq("town_hall_level", th);
-  }
-  if (type) {
-    query = query.eq("base_type", type);
-  }
-  if (tag) {
-    query = query.contains("tags", [tag]);
-  }
-
-  if (sort === "oldest") {
-    query = query.order("created_at", { ascending: true });
-  } else if (sort === "views") {
-    query = query.order("view_count", { ascending: false });
-  } else if (sort === "rating") {
-    query = query.order("average_rating", { ascending: false });
-  } else if (sort === "copies") {
-    query = query.order("copy_count", { ascending: false });
-  } else {
-    query = query.order("created_at", { ascending: false });
-  }
-
-  const { data: bases } = await query.limit(48);
+  const bases = listBases({
+    th: th && th >= 3 && th <= 18 ? th : undefined,
+    type,
+    tag,
+    sort,
+  });
 
   function hrefFor(next: Record<string, string | undefined>) {
     const sp = new URLSearchParams();
@@ -151,11 +107,7 @@ export default async function BasesPage({
             All
           </Chip>
           {baseTypes.map((t) => (
-            <Chip
-              key={t}
-              href={hrefFor({ type: t })}
-              active={type === t}
-            >
+            <Chip key={t} href={hrefFor({ type: t })} active={type === t}>
               {baseTypeLabels[t]}
             </Chip>
           ))}
@@ -191,46 +143,33 @@ export default async function BasesPage({
         </FilterRow>
       </GamePanel>
 
-      {!bases?.length ? (
+      {!bases.length ? (
         <div className="mt-10">
           <CampMascot
             character="archer"
-            line="No bases match these filters yet. Try another Town Hall — or come back after the next raid of uploads."
+            line="No bases match these filters yet. Try another Town Hall."
           />
         </div>
       ) : (
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {bases.map((base) => {
-            const creator = Array.isArray(base.creator)
-              ? base.creator[0]
-              : base.creator;
-            const thumb =
-              isStorageConfigured() && base.thumbnail_image_key
-                ? getPublicImageUrl(base.thumbnail_image_key)
-                : null;
             const level =
-              base.layout_type === "builder_base"
-                ? `BH${base.builder_hall_level}`
-                : `TH${base.town_hall_level}`;
+              base.layoutType === "builder_base"
+                ? `BH${base.builderHallLevel}`
+                : `TH${base.townHallLevel}`;
             const typeLabel =
-              baseTypeLabels[base.base_type as BaseType] ?? base.base_type;
+              baseTypeLabels[base.baseType as BaseType] ?? base.baseType;
 
             return (
               <Link key={base.slug} href={`/base/${base.slug}`}>
                 <GamePanel className="h-full transition hover:border-gold/70">
                   <div className="mb-3 aspect-video overflow-hidden rounded-xl border border-border bg-black/20">
-                    {thumb ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={thumb}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-xs text-muted">
-                        No image
-                      </div>
-                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={base.thumbnail}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                   <p className="text-xs font-bold uppercase tracking-wider text-gold">
                     {level} · {typeLabel}
@@ -238,20 +177,17 @@ export default async function BasesPage({
                   <h2 className="mt-1 font-display text-lg font-semibold text-foreground">
                     {base.title}
                   </h2>
-                  {base.tags?.length ? (
+                  {base.tags.length ? (
                     <p className="mt-1 text-[11px] text-muted">
-                      {(base.tags as string[])
+                      {base.tags
                         .slice(0, 3)
                         .map((t) => baseTagLabels[t as BaseTag] ?? t)
                         .join(" · ")}
                     </p>
                   ) : null}
                   <p className="mt-2 text-sm text-muted">
-                    @{creator?.username ?? "unknown"} · 👁 {base.view_count} ·{" "}
-                    {base.rating_count > 0
-                      ? `${Number(base.average_rating).toFixed(0)}%`
-                      : "No score"}{" "}
-                    · 📋 {base.copy_count}
+                    @{base.creator.username} · {base.viewCount} views ·{" "}
+                    {base.ratingPercent}% · {base.copyCount} copies
                   </p>
                 </GamePanel>
               </Link>

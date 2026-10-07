@@ -1,19 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import {
-  signInAction,
-  signUpAction,
-  type AuthActionState,
-} from "@/actions/auth";
 import { CampMascot } from "@/components/CampMascot";
+import { DemoNotice } from "@/components/DemoNotice";
 import { GamePanel } from "@/components/GamePanel";
 
-const initialState: AuthActionState = {};
-
 export function SignInForm() {
-  const [state, formAction, pending] = useActionState(signInAction, initialState);
+  const [notice, setNotice] = useState<string | null>(null);
 
   return (
     <AuthShell
@@ -28,7 +22,13 @@ export function SignInForm() {
         </>
       }
     >
-      <form action={formAction} className="flex flex-col gap-4">
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setNotice("Portfolio demo — auth is UI-only.");
+        }}
+      >
         <Field label="Email" name="email" type="email" autoComplete="email" />
         <Field
           label="Password"
@@ -36,15 +36,20 @@ export function SignInForm() {
           type="password"
           autoComplete="current-password"
         />
-        {state.error ? <ErrorText text={state.error} /> : null}
-        <SubmitButton pending={pending} label="Enter the camp" />
+        {notice ? <DemoNotice /> : null}
+        <button
+          type="submit"
+          className="cta-ember rounded-xl bg-ember px-4 py-3 text-sm font-bold text-[#1a1208] transition hover:bg-ember-soft"
+        >
+          Enter the camp
+        </button>
       </form>
     </AuthShell>
   );
 }
 
 export function SignUpForm() {
-  const [state, formAction, pending] = useActionState(signUpAction, initialState);
+  const [notice, setNotice] = useState<string | null>(null);
 
   return (
     <AuthShell
@@ -60,7 +65,13 @@ export function SignUpForm() {
         </>
       }
     >
-      <form action={formAction} className="flex flex-col gap-4">
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setNotice("Portfolio demo — auth is UI-only.");
+        }}
+      >
         <Field label="Email" name="email" type="email" autoComplete="email" />
         <Field
           label="Password"
@@ -68,13 +79,13 @@ export function SignUpForm() {
           type="password"
           autoComplete="new-password"
         />
-        {state.error ? <ErrorText text={state.error} /> : null}
-        {state.success ? (
-          <p className="rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-muted">
-            {state.success}
-          </p>
-        ) : null}
-        <SubmitButton pending={pending} label="Create account" />
+        {notice ? <DemoNotice /> : null}
+        <button
+          type="submit"
+          className="cta-ember rounded-xl bg-ember px-4 py-3 text-sm font-bold text-[#1a1208] transition hover:bg-ember-soft"
+        >
+          Create account
+        </button>
       </form>
     </AuthShell>
   );
@@ -127,25 +138,5 @@ function Field({
         className="rounded-xl border-2 border-border bg-background px-3 py-3 text-foreground outline-none ring-ember focus:ring-2"
       />
     </label>
-  );
-}
-
-function SubmitButton({ pending, label }: { pending: boolean; label: string }) {
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="cta-ember rounded-xl bg-ember px-4 py-3 text-sm font-bold text-[#1a1208] transition hover:bg-ember-soft disabled:opacity-60"
-    >
-      {pending ? "Please wait…" : label}
-    </button>
-  );
-}
-
-function ErrorText({ text }: { text: string }) {
-  return (
-    <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-      {text}
-    </p>
   );
 }

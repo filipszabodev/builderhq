@@ -2,44 +2,8 @@ import Link from "next/link";
 import { CampIcon } from "@/components/CampIcon";
 import { CampMascot } from "@/components/CampMascot";
 import { GamePanel } from "@/components/GamePanel";
-import { createClient, hasSupabasePublicEnv } from "@/lib/supabase/server";
 
-export const dynamic = "force-dynamic";
-
-export default async function HomePage() {
-  let loggedIn = false;
-  let username: string | null = null;
-
-  if (hasSupabasePublicEnv()) {
-    try {
-      const supabase = await createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      loggedIn = Boolean(user);
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("username")
-          .eq("id", user.id)
-          .maybeSingle();
-        username = profile?.username ?? null;
-      }
-    } catch (error) {
-      console.error("HomePage auth error", error);
-    }
-  }
-
-  let secondaryLabel = "Join the camp";
-  let secondaryTo = "/register";
-  if (loggedIn && username) {
-    secondaryLabel = "View profile";
-    secondaryTo = `/builder/${username}`;
-  } else if (loggedIn) {
-    secondaryLabel = "Finish setup";
-    secondaryTo = "/onboarding";
-  }
-
+export default function HomePage() {
   return (
     <div className="relative overflow-hidden">
       <div
@@ -69,10 +33,10 @@ export default async function HomePage() {
                 Browse bases
               </Link>
               <Link
-                href={secondaryTo}
+                href="/register"
                 className="rounded-xl border-2 border-gold/40 bg-surface/80 px-5 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition hover:border-gold/70"
               >
-                {secondaryLabel}
+                Join the camp
               </Link>
             </div>
           </div>
